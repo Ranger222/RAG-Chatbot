@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  backend:
+    build: ./backend
+    environment:
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY}
+      - MISTRAL_CHAT_MODEL=mistral-large-latest
+      - MISTRAL_EMBED_MODEL=mistral-embed
+    volumes:
+      - ./backend/storage:/app/storage
+    ports:
+      - "8000:8000"
+  frontend:
+    build:
+      context: ./my-app
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://backend:8000
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
